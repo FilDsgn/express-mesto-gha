@@ -13,6 +13,12 @@ const getUserById = (req, res) => {
     .orFail()
     .then((user) => res.send(user))
     .catch((err) => {
+      if (err.name === 'CastError') {
+        return res
+          .status(400)
+          .send({ message: 'Пользователь по указанному _id не найден.' });
+      }
+
       if (err.name === 'DocumentNotFoundError') {
         return res
           .status(404)
@@ -48,7 +54,7 @@ const updateUser = (req, res) => {
     { new: true, runValidators: true }
   )
     .orFail()
-    .then((user) => res.status(201).send(user))
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({
@@ -75,7 +81,7 @@ const updateAvatar = (req, res) => {
     { new: true, runValidators: true }
   )
     .orFail()
-    .then((user) => res.status(201).send(user))
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({
