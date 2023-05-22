@@ -5,7 +5,7 @@ const cardRoutes = require('./cards');
 router.use('/users', userRoutes);
 router.use('/cards', cardRoutes);
 router.use('/*', (req, res) => {
-  res.status(404).send({ message: 'Ошибка: 404' });
+  res.status(404).send({ message: 'Такой страницы не существует' });
 });
 
 module.exports = router;

@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 const { PORT = 3000 } = process.env;
 const router = require('./routes/router');
+
 const app = express();
 
 app.use(bodyParser.json());

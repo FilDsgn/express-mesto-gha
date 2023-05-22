@@ -8,13 +8,6 @@
           "_id"
         ]
       }
-    ],
-    "no-unused-vars": [
-      "error",
-      {
-        "vars":
-          "err"
-      }
     ]
   }
 }
