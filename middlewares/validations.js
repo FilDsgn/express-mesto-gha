@@ -36,7 +36,7 @@ const validationUpdateAvatar = celebrate({
 });
 
 const validationGetUserById = celebrate({
-  body: Joi.object()
+  params: Joi.object()
     .keys({
       id: Joi.string().custom(validationId).required(),
     }),
@@ -70,7 +70,7 @@ const validationCreateCard = celebrate({
 });
 
 const validationCardId = celebrate({
-  body: Joi.object()
+  params: Joi.object()
     .keys({
       cardId: Joi.string().custom(validationId).required(),
     }),

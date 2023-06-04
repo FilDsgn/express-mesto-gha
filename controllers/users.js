@@ -20,7 +20,7 @@ const getUserById = (req, res, next) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new BadRequestError('Пользователь по указанному _id не найден.'));
+        return next(new BadRequestError('Пользователь по указанному _id не найден1.'));
       }
 
       if (err.name === 'DocumentNotFoundError') {
@@ -33,9 +33,9 @@ const getUserById = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const {
-    name,
-    about,
-    avatar,
+    name = 'Жак-Ив Кусто',
+    about = 'Исследователь',
+    avatar = 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     email,
     password,
   } = req.body;
