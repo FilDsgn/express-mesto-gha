@@ -1,11 +1,11 @@
 const { celebrate, Joi } = require('celebrate');
 const mongoose = require('mongoose');
-const { isUrl } = require('validator');
+const { isURL } = require('validator');
 
 const BadRequestError = require('../errors/BadRequestError');
 
 const validationUrl = (url) => {
-  if (isUrl(url)) {
+  if (isURL(url)) {
     return url;
   }
 

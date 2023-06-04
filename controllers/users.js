@@ -41,24 +41,33 @@ const createUser = (req, res, next) => {
   } = req.body;
 
   bcrypt.hash(password, 10)
-    .then((hash) => User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hash,
-    }))
-    .then(() => res.status(201).send({ message: 'Пользователь успешно создан' }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
-      }
-      if (err.code === 11000) {
-        return next(new ConflictError('Такой пользователь уже существует'));
-      }
+    .then((hash) => {
+      User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      })
+        .then(() => res.status(201)
+          .send({
+            name,
+            about,
+            avatar,
+            email,
+          }))
+        .catch((err) => {
+          if (err.name === 'ValidationError') {
+            return next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
+          }
+          if (err.code === 11000) {
+            return next(new ConflictError('Такой пользователь уже существует'));
+          }
 
-      return next(err);
-    });
+          return next(err);
+        });
+    })
+    .catch(next);
 };
 
 const updateUser = (req, res, next) => {
