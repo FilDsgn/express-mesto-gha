@@ -27,25 +27,19 @@ const createCard = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
 
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
+    .orFail(new NotFoundError('Передан несуществующий _id карточки.'))
     .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Передан несуществующий _id карточки.');
-      }
-
       if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Карточка пренадлежит другому пользователю.');
       }
 
-      return res.send(card);
+      return Card.deleteOne(card)
+        .then(() => {
+          res.send({ message: 'Карточка удалена' });
+        });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return next(new BadRequestError('Карточка с указанным _id не найдена.'));
-      }
-
-      return next(err);
-    });
+    .catch(next);
 };
 
 const likeCard = (req, res, next) => {

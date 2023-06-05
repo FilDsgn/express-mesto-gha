@@ -16,15 +16,11 @@ const getUserById = (req, res, next) => {
   const { id } = req.params;
 
   User.findById(id)
-    .orFail()
+    .orFail(new NotFoundError('Пользователь по указанному _id не найден.'))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new BadRequestError('Пользователь по указанному _id не найден1.'));
-      }
-
-      if (err.name === 'DocumentNotFoundError') {
-        return next(new NotFoundError('Пользователь по указанному _id не найден.'));
+        return next(new BadRequestError('Передан некорректный ID'));
       }
 
       return next(err);
@@ -33,9 +29,9 @@ const getUserById = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const {
-    name = 'Жак-Ив Кусто',
-    about = 'Исследователь',
-    avatar = 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    name,
+    about,
+    avatar,
     email,
     password,
   } = req.body;
@@ -78,15 +74,11 @@ const updateUser = (req, res, next) => {
     { name, about },
     { new: true, runValidators: true },
   )
-    .orFail()
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден.'))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new BadRequestError('Переданы некорректные данные при обновлении профиля.'));
-      }
-
-      if (err.name === 'DocumentNotFoundError') {
-        return next(new NotFoundError('Пользователь с указанным _id не найден.'));
       }
 
       return next(err);
@@ -101,15 +93,11 @@ const updateAvatar = (req, res, next) => {
     { avatar },
     { new: true, runValidators: true },
   )
-    .orFail()
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден.'))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new BadRequestError('Переданы некорректные данные при обновлении аватара.'));
-      }
-
-      if (err.name === 'DocumentNotFoundError') {
-        return next(new NotFoundError('Пользователь с указанным _id не найден.'));
       }
 
       return next(err);
@@ -130,13 +118,8 @@ const login = (req, res, next) => {
 
 const getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
-    .then((user) => {
-      if (!user) {
-        throw new BadRequestError('Пользователь не найден');
-      }
-
-      return res.send(user);
-    })
+    .orFail(new NotFoundError('Пользователь не найден.'))
+    .then((user) => res.send(user))
     .catch(next);
 };
 
